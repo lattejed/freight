@@ -180,3 +180,21 @@ test-project-parser = { path = "crates/parser" }
 #...
 ```
 
+## Commands
+
+- `add workspace <name>` - generate top-level project structure
+- `add crate <name>` - add a new crate to the workspace
+- `add dep <name>` - add an external dependency to the workspace
+- `use dep <crate> <name>` - use a dependency in `<crate>`
+- `preflight` - check that the project is safe to add to
+- `help` - show help information
+
+Run `help` for a full explanation of commands and their options.
+
+## Contributing
+
+Contributer guidelines can be found in [`CONTRIBUTING.md`](./CONTRIBUTING.md).
+
+## Status
+
+This project is **under development** and not ready for general use.
