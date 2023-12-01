@@ -87,7 +87,7 @@ Running `add crate --bin --default cli` will add a `test-project-cli` crate:
 ├─ rustfmt.toml
 ```
 
-The top-level `Cargo.toml` file now look like:
+The top-level `Cargo.toml` file now looks like:
 
 ```toml
 [workspace]
@@ -161,7 +161,7 @@ Running `add crate --lib parser` will add a `test-project-parser` crate:
 ├─ rustfmt.toml
 ```
 
-The top-level `Cargo.toml` file now look like:
+The top-level `Cargo.toml` file now looks like:
 
 ```toml
 [workspace]
