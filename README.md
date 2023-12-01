@@ -97,10 +97,10 @@ members = [
 ]
 
 [workspace.package]
-...
+#...
 
 [workspace.dependencies]
-...
+#...
 ```
 
 The `Cargo.toml` for the `cli` crate will look like:
@@ -172,11 +172,11 @@ members = [
 ]
 
 [workspace.package]
-...
+#...
 
 [workspace.dependencies]
 # workspace dependenices
 test-project-parser = { path = "crates/parser" }
-...
+#...
 ```
 
