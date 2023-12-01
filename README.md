@@ -27,10 +27,10 @@ Running `add workspace test-project` generates the following structure:
 ├─ .github/
 ├─ crates/
 ├─ tests/
-├─ .freight
 ├─ .gitignore
-├─ CONTRIBUTING.md
 ├─ Cargo.toml
+├─ CONTRIBUTING.md
+├─ freight.toml
 ├─ LICENSE-APACHE
 ├─ LICENSE-MIT
 ├─ README.md
