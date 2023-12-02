@@ -61,8 +61,6 @@ repository = ""
 # dev dependencies
 ```
 
-The `members`, `authors`, `repository` and `dependencies` sections will be empty.
-
 Running `add crate --bin --default cli` will add a `test-project-cli` crate:
 
 ```
