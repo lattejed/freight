@@ -1,5 +1,0 @@
-## Changelog
-
-### Unreleased
-
-- Project init
