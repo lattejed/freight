@@ -73,8 +73,8 @@ Running `add crate --bin --default cli` will add a `test-project-cli` crate:
 │  ├─ cli/
 │  │  ├─ src/
 │  │  │  ├─ main.rs
-│  │  ├─ CHANGELOG.md
 │  │  ├─ Cargo.toml
+│  │  ├─ CHANGELOG.md
 │  │  ├─ README.md
 ├─ tests/
 ├─ .freight
@@ -141,14 +141,14 @@ Running `add crate --lib parser` will add a `test-project-parser` crate:
 │  ├─ cli/
 │  │  ├─ src/
 │  │  │  ├─ main.rs
-│  │  ├─ CHANGELOG.md
 │  │  ├─ Cargo.toml
+│  │  ├─ CHANGELOG.md
 │  │  ├─ README.md
 │  ├─ parser/
 │  │  ├─ src/
 │  │  │  ├─ lib.rs
-│  │  ├─ CHANGELOG.md
 │  │  ├─ Cargo.toml
+│  │  ├─ CHANGELOG.md
 │  │  ├─ README.md
 ├─ tests/
 ├─ .freight
