@@ -2,4 +2,4 @@
 
 ### Unreleased
 
-- Project init
+- Crate init
