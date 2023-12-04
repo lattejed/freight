@@ -1,0 +1,38 @@
+// Copyright (c) 2023 Matthew Wiriyathananon-Smith
+//
+// Licensed under the Apache License, Version 2.0
+// <LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0> or the MIT
+// license <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
+// option. All files in the project carrying such notice may not be copied,
+// modified, or distributed except according to those terms.
+
+document            = _{ SOI ~ (table | array_table | key_value | comment)* ~ EOI }
+
+table               =  { "[" ~ key ~ "]" ~ comment? ~ (key_value | comment)* }
+array_table         =  { "[[" ~ key ~ "]]" ~ comment? ~ (key_value | comment)* }
+key_value           =  { key ~ "=" ~ value ~ comment? }
+comment             = @{ "#" ~ (!NEWLINE ~ ANY)* }
+
+key                 =  { basic_key ~ ("." ~ basic_key)* }
+basic_key           = @{ identifier | literal | string }
+
+identifier          =  { (ASCII_ALPHANUMERIC | "_" | "-")+ }
+
+value               = _{ inline_table | array | multi_line_literal | literal | multi_line_string | string | other }
+
+inline_table        =  { "{" ~ key_value ~ ("," ~ key_value)* ~ ","? ~ "}" | "{" ~ "}" }
+
+array               =  { "[" ~ comment* ~ value ~ ("," ~ comment* ~ value)* ~ ","? ~ comment* ~ "]" | "[" ~ comment* ~ "]" }
+
+multi_line_literal  = @{ "'''" ~ (!"'''" ~ ANY)* ~ "'''" }
+literal             = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
+
+multi_line_string   = @{ "\"\"\"" ~ inner ~ "\"\"\"" }
+string              = @{ "\"" ~ inner ~ "\"" }
+inner               = @{ (!("\"" | "\\" | "\u{0000}" | "\u{001F}") ~ ANY)* ~ (escape ~ inner)? }
+escape              = @{ "\\" ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? }
+unicode             = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
+
+other               = @{ (ASCII_ALPHANUMERIC | " " | ":" | "-" | "_" | "." | "+")+ }
+
+WHITESPACE          = _{ " " | "\t" | NEWLINE }
