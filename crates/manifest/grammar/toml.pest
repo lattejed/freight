@@ -6,7 +6,7 @@
 // option. All files in the project carrying such notice may not be copied,
 // modified, or distributed except according to those terms.
 
-document = _{ 
+document = _{
                 SOI 
                 ~ (
                     (
@@ -36,11 +36,15 @@ item = _{
             key_value 
         }
 
-key_value   =  { key ~ "=" ~ value }
-value       = _{ inline_table | array | identifier }
+key_value = { key ~ "=" ~ value }
+
+key         =  { basic_key ~ ("." ~ basic_key)* }
+basic_key   = @{ string | literal | identifier }
+
+value = _{ inline_table | array | identifier }
 
 table = { 
-            "[" ~ identifier ~ "]" ~ trailing_comment? ~ NEWLINE?
+            "[" ~ key ~ "]" ~ trailing_comment? ~ NEWLINE?
             ~ (
                 table_section 
                 |
@@ -57,7 +61,7 @@ table_section = {
                 }
 
 array_table = {
-                "[[" ~ identifier ~ "]]" ~ trailing_comment? ~ NEWLINE?
+                "[[" ~ key ~ "]]" ~ trailing_comment? ~ NEWLINE?
                 ~ (
                     (key_value ~ trailing_comment? ~ NEWLINE)
                     |
@@ -86,17 +90,30 @@ array = {
             "]"
         }
 
-inline_table = { 
-                    "{" ~ key_value ~ ("," ~ key_value)* ~ "}" | "{" ~ "}" 
-               }
-
+inline_table = { "{" ~ key_value ~ ("," ~ key_value)* ~ "}" | "{" ~ "}" }
 
 table_header        =  { comment }
 trailing_comment    =  { comment }
 line_comment        =  { comment }
 comment             = _{ "#" ~ (!NEWLINE ~ ANY)* }
 
-identifier  = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
+literal = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
+
+string          = @{ "\"" ~ string_inner ~ "\"" }
+string_inner    = @{ 
+                    (
+                        !("\"" | "\\" | "\u{0000}" | "\u{001F}") 
+                        ~ ANY
+                    )* 
+                    ~ (escape ~ string_inner)? 
+                   }
+escape          = @{ 
+                    "\\" 
+                    ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? 
+                 }
+unicode         = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
+
+identifier = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
 
 nothing     = _{ NEWLINE* }
 WHITESPACE  = _{ " " | "\t" }
