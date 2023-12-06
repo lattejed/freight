@@ -35,7 +35,7 @@ item = _{
         }
 
 key_value   =  { identifier ~ "=" ~ value }
-value       = _{ array | identifier }
+value       = _{ inline_table | array | identifier }
 
 table = { 
             "[" ~ identifier ~ "]" ~ trailing_comment? ~ NEWLINE?
@@ -53,6 +53,10 @@ table_section = {
                     ~ 
                     (key_value ~ trailing_comment? ~ NEWLINE)*
                 }
+
+inline_table = { 
+                    "{" ~ key_value ~ ("," ~ key_value)* ~ ","? ~ "}" | "{" ~ "}" 
+               }
 
 array = {
             "[" 
