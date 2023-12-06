@@ -44,7 +44,9 @@ basic_key   = @{ string | literal | identifier }
 value = _{ 
             inline_table 
             | 
-            array 
+            array
+            |
+            multi_line_literal
             | 
             literal 
             | 
@@ -105,7 +107,8 @@ trailing_comment    =  { comment }
 line_comment        =  { comment }
 comment             = _{ "#" ~ (!NEWLINE ~ ANY)* }
 
-literal = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
+multi_line_literal  = @{ "'''" ~ (!"'''" ~ ANY)* ~ "'''" }
+literal             = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
 
 string          = @{ "\"" ~ string_inner ~ "\"" }
 string_inner    = @{ 
@@ -122,6 +125,9 @@ escape          = @{
 unicode         = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
 
 identifier = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
+
+// This includes all other values: dates, numbers, booleans, etc.
+other = @{ (ASCII_ALPHANUMERIC | " " | ":" | "-" | "_" | "." | "+")+ }
 
 nothing     = _{ NEWLINE* }
 WHITESPACE  = _{ " " | "\t" }
