@@ -41,7 +41,15 @@ key_value = { key ~ "=" ~ value }
 key         =  { basic_key ~ ("." ~ basic_key)* }
 basic_key   = @{ string | literal | identifier }
 
-value = _{ inline_table | array | identifier }
+value = _{ 
+            inline_table 
+            | 
+            array 
+            | 
+            literal 
+            | 
+            string  
+         }
 
 table = { 
             "[" ~ key ~ "]" ~ trailing_comment? ~ NEWLINE?
