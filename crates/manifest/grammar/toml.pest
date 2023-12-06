@@ -36,7 +36,7 @@ item = _{
             key_value 
         }
 
-key_value   =  { identifier ~ "=" ~ value }
+key_value   =  { key ~ "=" ~ value }
 value       = _{ inline_table | array | identifier }
 
 table = { 
