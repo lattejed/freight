@@ -29,7 +29,9 @@ line = _{
         }
 
 item = _{ 
-            table 
+            table
+            |
+            array_table
             | 
             key_value 
         }
@@ -54,9 +56,16 @@ table_section = {
                     (key_value ~ trailing_comment? ~ NEWLINE)*
                 }
 
-inline_table = { 
-                    "{" ~ key_value ~ ("," ~ key_value)* ~ "}" | "{" ~ "}" 
-               }
+array_table = {
+                "[[" ~ identifier ~ "]]" ~ trailing_comment? ~ NEWLINE?
+                ~ (
+                    (key_value ~ trailing_comment? ~ NEWLINE)
+                    |
+                    (line_comment ~ NEWLINE)
+                    |
+                    NEWLINE
+                )*
+              }
 
 array = {
             "[" 
@@ -76,6 +85,11 @@ array = {
             ~ 
             "]"
         }
+
+inline_table = { 
+                    "{" ~ key_value ~ ("," ~ key_value)* ~ "}" | "{" ~ "}" 
+               }
+
 
 table_header        =  { comment }
 trailing_comment    =  { comment }
