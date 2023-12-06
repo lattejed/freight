@@ -49,7 +49,9 @@ value = _{
             multi_line_literal
             | 
             literal 
-            | 
+            |
+            multi_line_string
+            |
             string  
          }
 
@@ -107,26 +109,27 @@ trailing_comment    =  { comment }
 line_comment        =  { comment }
 comment             = _{ "#" ~ (!NEWLINE ~ ANY)* }
 
-multi_line_literal  = @{ "'''" ~ (!"'''" ~ ANY)* ~ "'''" }
+multi_line_literal  = @{ "'"{3,} ~ (!"'"{3,} ~ ANY)* ~ "'"{3,} }
 literal             = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
 
-string          = @{ "\"" ~ string_inner ~ "\"" }
-string_inner    = @{ 
-                    (
-                        !("\"" | "\\" | "\u{0000}" | "\u{001F}") 
-                        ~ ANY
-                    )* 
-                    ~ (escape ~ string_inner)? 
-                   }
-escape          = @{ 
-                    "\\" 
-                    ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? 
-                 }
-unicode         = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
+multi_line_string   = @{ "\""{3,} ~ (!"\""{3,} ~ ANY)* ~ "\""{3,} }
+string              = @{ "\"" ~ string_inner ~ "\"" }
+
+string_inner        = @{ 
+                       (
+                           !("\"" | "\\" | "\u{0000}" | "\u{001F}") 
+                           ~ ANY
+                       )* 
+                       ~ (escape ~ string_inner)? 
+                      }
+escape              = @{ 
+                       "\\" 
+                       ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? 
+                      }
+unicode             = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
 
 identifier = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
 
-// This includes all other values: dates, numbers, booleans, etc.
 other = @{ (ASCII_ALPHANUMERIC | " " | ":" | "-" | "_" | "." | "+")+ }
 
 nothing     = _{ NEWLINE* }
