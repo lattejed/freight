@@ -1,12 +1,3 @@
-// pest. The Elegant Parser
-// Copyright (c) 2018 Dragoș Tiselice
-//
-// Licensed under the Apache License, Version 2.0
-// <LICENSE-APACHE or http://www.apache.org/licenses/LICENSE-2.0> or the MIT
-// license <LICENSE-MIT or http://opensource.org/licenses/MIT>, at your
-// option. All files in the project carrying such notice may not be copied,
-// modified, or distributed except according to those terms.
-
 // Copyright (c) 2023 Matthew Wiriyathananon-Smith
 //
 // Licensed under the Apache License, Version 2.0
@@ -15,33 +6,79 @@
 // option. All files in the project carrying such notice may not be copied,
 // modified, or distributed except according to those terms.
 
-document            = _{ SOI ~ (table | array_table | key_value | comment)* ~ EOI }
+document = _{ 
+                SOI 
+                ~ (
+                    (
+                        NEWLINE*
+                        ~ line
+                        ~ (NEWLINE* ~ line)*
+                        ~ NEWLINE*
+                    )
+                    |
+                    nothing
+                  )
+                ~ 
+                EOI 
+            }
 
-table               =  { "[" ~ key ~ "]" ~ comment? ~ (key_value | comment)* }
-array_table         =  { "[[" ~ key ~ "]]" ~ comment? ~ (key_value | comment)* }
-key_value           =  { key ~ "=" ~ value ~ comment? }
-comment             = @{ "#" ~ (!NEWLINE ~ ANY)* }
+line = _{
+            (item ~ trailing_comment?)
+            |
+            line_comment
+        }
 
-key                 =  { basic_key ~ ("." ~ basic_key)* }
-basic_key           = @{ identifier | literal | string }
+item = _{ 
+            table 
+            | 
+            key_value 
+        }
 
-identifier          =  { (ASCII_ALPHANUMERIC | "_" | "-")+ }
+key_value   =  { identifier ~ "=" ~ value }
+value       = _{ array | identifier }
 
-value               = _{ inline_table | array | multi_line_literal | literal | multi_line_string | string | other }
+table = { 
+            "[" ~ identifier ~ "]" ~ trailing_comment? ~ NEWLINE?
+            ~ (
+                table_section 
+                |
+                (key_value ~ trailing_comment? ~ NEWLINE)
+                |
+                NEWLINE
+              )*
+        }
 
-inline_table        =  { "{" ~ key_value ~ ("," ~ key_value)* ~ ","? ~ "}" | "{" ~ "}" }
+table_section = {
+                    (table_header ~ NEWLINE)
+                    ~ 
+                    (key_value ~ trailing_comment? ~ NEWLINE)*
+                }
 
-array               =  { "[" ~ comment* ~ value ~ ("," ~ comment* ~ value)* ~ ","? ~ comment* ~ "]" | "[" ~ comment* ~ "]" }
+array = {
+            "[" 
+            ~ (trailing_comment ~ NEWLINE)?
+            ~ (
+                (
+                    value 
+                    ~ ("," ~ trailing_comment? ~ value)* 
+                    ~ ","? 
+                    ~ (trailing_comment ~ NEWLINE)?
+                )
+                |
+                (line_comment ~ NEWLINE)
+                |
+                NEWLINE
+              )*
+            ~ 
+            "]"
+        }
 
-multi_line_literal  = @{ "'''" ~ (!"'''" ~ ANY)* ~ "'''" }
-literal             = @{ "'" ~ (!"'" ~ ANY)* ~ "'" }
+table_header        =  { comment }
+trailing_comment    =  { comment }
+line_comment        =  { comment }
+comment             = _{ "#" ~ (!NEWLINE ~ ANY)* }
 
-multi_line_string   = @{ "\"\"\"" ~ inner ~ "\"\"\"" }
-string              = @{ "\"" ~ inner ~ "\"" }
-inner               = @{ (!("\"" | "\\" | "\u{0000}" | "\u{001F}") ~ ANY)* ~ (escape ~ inner)? }
-escape              = @{ "\\" ~ ("b" | "t" | "n" | "f" | "r" | "\"" | "\\" | unicode | NEWLINE)? }
-unicode             = @{ "u" ~ ASCII_HEX_DIGIT{4} | "U" ~ ASCII_HEX_DIGIT{8} }
+identifier  = @{ (ASCII_ALPHANUMERIC | "_" | "-")+ }
 
-other               = @{ (ASCII_ALPHANUMERIC | " " | ":" | "-" | "_" | "." | "+")+ }
-
-WHITESPACE          = _{ " " | "\t" | NEWLINE }
+nothing     = _{ NEWLINE* }
+WHITESPACE  = _{ " " | "\t" }
