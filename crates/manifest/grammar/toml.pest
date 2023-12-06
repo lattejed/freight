@@ -55,7 +55,7 @@ table_section = {
                 }
 
 inline_table = { 
-                    "{" ~ key_value ~ ("," ~ key_value)* ~ ","? ~ "}" | "{" ~ "}" 
+                    "{" ~ key_value ~ ("," ~ key_value)* ~ "}" | "{" ~ "}" 
                }
 
 array = {
