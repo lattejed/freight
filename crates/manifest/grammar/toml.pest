@@ -52,7 +52,9 @@ value = _{
             |
             multi_line_string
             |
-            string  
+            string
+            |
+            other
          }
 
 table = { 
